@@ -2,10 +2,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap; 
-
+import java.util.HashMap;
+import java.util.*;
 //Need to add functionality to upload new CSV
-// Maybe we can have a temp CSV file that we can over write so we dont constantly have new CSV files 
+// Maybe we can have a temp CSV file that we can over write so we dont constantly have new CSV files
 
 
 public class Dataset {
@@ -13,22 +13,43 @@ public class Dataset {
     private String[][] dataset;
     private int rows = 74283;
     private int columns = 25;
-    
+
     public int[] integerIndexs = {1,3,4,12};
 
     public void setCSVPath(String newCSV) {
         this.csvPath = newCSV;
     }
-    private int getRows(){return this.rows;}
+
+    public String[][] getDataset() {
+        return dataset;
+    }
+
+    public List<Integer> getAllRowIndices() {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < dataset.length; i++) {
+            indices.add(i);
+        }
+        return indices;
+    }
+
+    public String getValue(int row, int col) {
+        return dataset[row][col];
+    }
+
+    public String[] getRow(int row) {
+        return dataset[row];
+    }
+    public int getRows(){return this.rows;}
 
     //private void setRows(int newRows){this.rows = newRows;} --> when we have upload CSV
-    private int getCols(){return this.columns;}
+    public int getCols(){return this.columns;}
     //private void setCols(int newCols){this.columns = newCols;}
+
 
 
     public void setDataset() {
         // In order to have a 2D array we are going to turn everything into strings to process
-        dataset = new String[rows][columns]; 
+        dataset = new String[rows][columns];
         int lineNumber = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
@@ -38,7 +59,7 @@ public class Dataset {
             br.readLine();
 
             while ((line = br.readLine()) != null && lineNumber < rows) {
-                
+
                 String[] values = line.split(",", columns);
 
                 for (int i = 0; i < values.length; i++) {
@@ -78,7 +99,7 @@ public class Dataset {
                 this.dataset[nullIndex][colIdx] = replacementValue;
             }
             else{
-            this.dataset[nullIndex][colIdx] = String.valueOf(colIdx == 12 ? (float) total / count : total / count);
+                this.dataset[nullIndex][colIdx] = String.valueOf(colIdx == 12 ? (float) total / count : total / count);
             }
         }
     }
