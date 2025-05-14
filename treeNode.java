@@ -1,7 +1,15 @@
-import java.util.*;
+package CS370_Team7;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class treeNode {
-    private Dataset dataset;
+    private dataset dataset;
     private List<Integer> rowIndices;
     private boolean isTerminal;
     private treeNode left;
@@ -9,6 +17,13 @@ public class treeNode {
     private int splitCol;
     private String splitThreshold;
     private String diagnosisResult;
+
+    public treeNode(dataset dataset, List<Integer> rowIndices) {
+        this.dataset = dataset;
+        this.rowIndices = rowIndices;
+        this.isTerminal = false;
+    }
+
 
     public int getSplitCol() {
         return splitCol;
@@ -18,10 +33,12 @@ public class treeNode {
         return splitThreshold;
     }
 
-    public treeNode(Dataset dataset, List<Integer> rowIndices) {
-        this.dataset = dataset;
-        this.rowIndices = rowIndices;
-        this.isTerminal = false;
+    public treeNode getLeft() {
+        return this.left;
+    }
+    
+    public treeNode getRight() {
+        return this.right;
     }
 
     public boolean isTerminal() {
@@ -32,37 +49,38 @@ public class treeNode {
         return diagnosisResult;
     }
 
+    public void debugPrint() {
+        System.out.println("Is terminal: " + isTerminal);
+        System.out.println("Split column: " + splitCol);
+        System.out.println("Split threshold: " + splitThreshold);
+        System.out.println("Diagnosis (if terminal): " + diagnosisResult);
+        System.out.println("Left child exists: " + (left != null));
+        System.out.println("Right child exists: " + (right != null));
+    }
+
+
+
     public void split() {
         if (rowIndices.size() < 100) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
             return;
         }
-
-        Map.Entry<Integer, String> splitRule = computeThreshold();
-        if (splitRule == null) {
-            this.isTerminal = true; // Can't split further
-            return;
-        }
-
+    
         Map.Entry<Integer, String> bestSplit = computeThreshold();
-        int bestCol = bestSplit.getKey();
-        String bestThreshold = bestSplit.getValue();
-
-        //no valid split found
-        if (bestCol == -1 || bestThreshold == null) {
+        if (bestSplit == null || bestSplit.getKey() == -1 || bestSplit.getValue() == null) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
-            System.out.println("No valid split found for current node. Marking as terminal.");
+            //System.out.println("No valid split found for current node. Marking as terminal.");
             return;
         }
-
-        this.splitCol = bestCol;
-        this.splitThreshold = bestThreshold;
-
+    
+        this.splitCol = bestSplit.getKey();
+        this.splitThreshold = bestSplit.getValue();
+    
         List<Integer> leftIndices = new ArrayList<>();
         List<Integer> rightIndices = new ArrayList<>();
-
+    
         for (int i : rowIndices) {
             String value = dataset.getValue(i, splitCol);
             if (isLessThanOrEqual(value, splitThreshold, splitCol)) {
@@ -71,7 +89,7 @@ public class treeNode {
                 rightIndices.add(i);
             }
         }
-
+    
         if (leftIndices.isEmpty() || rightIndices.isEmpty()) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
@@ -81,8 +99,9 @@ public class treeNode {
             left.split();
             right.split();
         }
-        System.out.println("Splitting on col[" + splitCol + "] <= " + splitThreshold);
-        System.out.println("Left count: " + leftIndices.size() + ", Right count: " + rightIndices.size());
+    
+        //System.out.println("Splitting on col[" + splitCol + "] <= " + splitThreshold);
+        //System.out.println("Left count: " + leftIndices.size() + ", Right count: " + rightIndices.size());
     }
 
     private Map.Entry<Integer, String> computeThreshold() {

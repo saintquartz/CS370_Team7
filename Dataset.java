@@ -1,15 +1,16 @@
+package CS370_Team7;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.*;
 //Need to add functionality to upload new CSV
 // Maybe we can have a temp CSV file that we can over write so we dont constantly have new CSV files
 
 
-public class Dataset {
-    private String csvPath = "alzheimers_prediction_dataset.csv";
+public class dataset {
+    // private String csvPath = "alzheimers_prediction_dataset.csv";
+    private String csvPath = ""; //add path here
     private String[][] dataset;
     private int rows = 74283;
     private int columns = 25;

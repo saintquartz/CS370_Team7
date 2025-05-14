@@ -2,6 +2,10 @@ package CS370_Team7;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class userGUI {
 
@@ -11,6 +15,8 @@ public class userGUI {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new userGUI().createAndShowGUI());
+
+
     }
 
     private void createAndShowGUI() {
@@ -67,6 +73,19 @@ public class userGUI {
             System.out.println("CSV File Path: " + csvPath);
             */
 
+            //run
+
+            for (int i = 0; i < userInput.length; i++) {
+                System.out.println(variableNames[i] + ": " + userInput[i]);
+            }
+            
+            dataset dataset = new dataset();
+            dataset.setDataset();
+            dataset.dataImputation();
+            randomForest rf = new randomForest(dataset);
+            String newPredictionFromRF = rf.predict(userInput);
+            System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
+
             JOptionPane.showMessageDialog(frame, "Inputs and CSV path submitted!");
         });
 
@@ -77,5 +96,9 @@ public class userGUI {
 
         frame.getContentPane().add(new JScrollPane(paddedPanel));
         frame.setVisible(true);
+
+
+        
     }
+
 }

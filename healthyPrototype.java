@@ -1,3 +1,5 @@
+package CS370_Team7;
+
 import java.util.HashMap;
 
 /**
@@ -90,8 +92,8 @@ public class healthyPrototype {
         for (int i = 0; i < nonStaticIndexs.length; i++) {
             int index = nonStaticIndexs[i];
 
-            String userVal = userData[index];
-            String protoVal = this.prototypeRow[index];
+            String userVal = userData[index].toLowerCase();
+            String protoVal = this.prototypeRow[index].toLowerCase();
 
             Integer userRank = outputRanking.get(userVal);
             Integer protoRank = outputRanking.get(protoVal);

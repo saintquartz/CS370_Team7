@@ -1,108 +1,109 @@
+package CS370_Team7;
 
 import java.util.*;
 
 public class randomForest {
-    private treeNode[] treeArr = new treeNode[100];
-    int numTrees = 100;
-    int bootStrapSize = 100;
-    Dataset dataContainer;
-    Set<Integer> testIdx= new HashSet<>();
-
-
-    /* 
-    boolean predict(String[] userInput){
-        // take a poll from each decision tree
-        // yesCount = hasAlzheimers?
-        // noCount = noAlz?
-        // return the popular vote
-        // if tie return hasAlz
-        int yesCount = 0;
-        int noCount = 0;
-        boolean outcome;
-        // not sure if outcome is a boolean can change later
-        for(treeNode currTreeNode : this.treeArr){
-            outcome = currTreeNode.predict(userInput);
-
-            if(outcome == true){
-                yesCount++;
-            }
-            else{
-                noCount++;
-            }
-        }
-        return yesCount >= noCount;
+    private decisionTree[] trees = new decisionTree[100];  // Array of decision trees
+    private int numTrees = 100;
+    private int bootStrapSize = 100;
+    private dataset dataContainer;
+    private Set<Integer> testIdx = new HashSet<>();
+    
+    public randomForest(dataset container) {
+        this.dataContainer = container;
+        splitDataSet();
+        train();
     }
 
-    float getAccuracy(){
-        //take test dataset indexs 
-        // compare outcome with expected
-        // return (outcome == expected) frequency / size
-
-        int numTotal = 0;
-        int numCorrect = 0;
-        //for(int idx: this.testIdx.keys()){ --> look up syntax 
-            // outcome = predict(this.dataset.getRowValues(idx));
-            // if outcome == getRowValues(idx)[-1] numCorrect++
-        //}
-        if(numTotal == 0){ return 0; }
-        return (float) numCorrect / numTotal;
+    public int getNumTrees() {
+        return this.numTrees;
     }
 
-    */
-    void splitDataSet(){
-        //We will take 20% of our rows and store there index in a set
-        // when boot strapping we will ensure each index we bootstrap is NOT in our test Set
-        double splitRate = .2;
+    public decisionTree[] getDTree() {
+        return this.trees;
+    }
+
+    public void splitDataSet() {
+        // Split 20% of the data for testing
+        double splitRate = 0.2;
         int rowTotal = this.dataContainer.getRows();
         int testSize = (int)(rowTotal * splitRate);
 
-        int randomRowIndex;
         Random randomObject = new Random();
 
-
-        for(int idx=0; idx<testSize; idx++){
-            randomRowIndex = randomObject.nextInt(this.dataContainer.getRows());
-            while(true){
-                if(!this.testIdx.contains(randomRowIndex)){
-                    testIdx.add(randomRowIndex);
-                    break;
-                }
-            }
+        while (testIdx.size() < testSize) {
+            int randomRowIndex = randomObject.nextInt(rowTotal);
+            testIdx.add(randomRowIndex);
         }
     }
-    void setDataset(Dataset container){
-        this.dataContainer = container;
-    }
-    void train(){
-        
 
-        for(int i=0; i< this.numTrees; i++){
-            Integer[] bootStrapArray = this.bootStrap();
+    public void train() {
+        // Train the forest by generating multiple decision trees
+        for (int i = 0; i < numTrees; i++) {
+            Integer[] bootStrapArray = bootStrap();
             List<Integer> bootStrapList = Arrays.asList(bootStrapArray);
-            this.treeArr[i] = new treeNode(this.dataContainer,bootStrapList);
-
+            decisionTree tree = new decisionTree(dataContainer, bootStrapList);
+            tree.train();  // Train each decision tree
+            trees[i] = tree;
         }
     }
-    Integer[] bootStrap(){
-        Integer[] subSet = new Integer[this.bootStrapSize];
+
+    public Integer[] bootStrap() {
+        // Bootstrap sampling to generate random training subsets
+        Integer[] subSet = new Integer[bootStrapSize];
         Random randomObject = new Random();
-        int randomRowIndex;
         Set<Integer> indexSet = new HashSet<>();
 
+        for (int i = 0; i < bootStrapSize; i++) {
+            int randomRowIndex;
+            do {
+                randomRowIndex = randomObject.nextInt(dataContainer.getRows());
+            } while (indexSet.contains(randomRowIndex) || testIdx.contains(randomRowIndex));  // Avoid test set rows
 
-        for(int i=0; i< bootStrapSize; i++){
-            while(true){
-                randomRowIndex = randomObject.nextInt(this.dataContainer.getRows());
-
-                if(!indexSet.contains(randomRowIndex) && !this.testIdx.contains(randomRowIndex)){
-                    subSet[i] = randomRowIndex;
-                    indexSet.add(randomRowIndex);
-                    break;
-                }
-            }
-
+            subSet[i] = randomRowIndex;
+            indexSet.add(randomRowIndex);
         }
         return subSet;
     }
-    
+
+    // Poll results from each tree and return the majority vote
+    public String predict(String[] userInput) {
+        Map<String, Integer> votes = new HashMap<>();
+        
+        // Collect predictions from all trees
+        for (decisionTree tree : trees) {
+            String prediction = tree.predict(userInput);
+            votes.put(prediction, votes.getOrDefault(prediction, 0) + 1);
+        }
+
+        // Find the most common prediction
+        String mostVoted = null;
+        int maxVotes = 0;
+        for (Map.Entry<String, Integer> entry : votes.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                mostVoted = entry.getKey();
+                maxVotes = entry.getValue();
+            }
+        }
+        return mostVoted;  // Return the most common outcome
+    }
+
+    // Optional: Evaluate the accuracy of the model using the test set
+    public float getAccuracy() {
+        int numTotal = 0;
+        int numCorrect = 0;
+
+        for (int idx : testIdx) {
+            String[] sample = dataContainer.getRow(idx);  // Assuming a method to fetch a row
+            String expected = sample[sample.length - 1];  // The last column is the target variable
+            String prediction = predict(sample);
+            
+            if (prediction.equals(expected)) {
+                numCorrect++;
+            }
+            numTotal++;
+        }
+
+        return (numTotal == 0) ? 0 : (float) numCorrect / numTotal;
+    }
 }
