@@ -48,14 +48,28 @@ public class dataset {
     private void setRows(int newRows){this.rows = newRows;}
     public int getCols(){return this.columns;}
     //private void setCols(int newCols){this.columns = newCols;}
-
-
-
     public void setDataset() {
-        // In order to have a 2D array we are going to turn everything into strings to process
+        int rowCount = 0;
+
+        // First pass: Count the number of lines (excluding header)
+        try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
+            // Skip header
+            br.readLine();
+
+            while (br.readLine() != null) {
+                rowCount++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Update rows and initialize dataset array
+        this.setRows(rowCount);
         this.dataset = new String[rows][columns];
+
         int lineNumber = 0;
 
+        // Second pass: Read data into dataset
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
             String line;
 
@@ -63,16 +77,12 @@ public class dataset {
             br.readLine();
 
             while ((line = br.readLine()) != null && lineNumber < rows) {
-
                 String[] values = line.split(",", columns);
-
                 for (int i = 0; i < values.length; i++) {
                     this.dataset[lineNumber][i] = values[i];
                 }
-
                 lineNumber++;
             }
-            this.setRows(lineNumber);
         } catch (IOException e) {
             e.printStackTrace();
         }
