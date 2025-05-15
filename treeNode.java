@@ -61,7 +61,7 @@ public class treeNode {
 
 
     public void split() {
-        if (rowIndices.size() < 100) {
+        if (rowIndices.size() < 10) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
             return;
@@ -71,6 +71,7 @@ public class treeNode {
         if (bestSplit == null || bestSplit.getKey() == -1 || bestSplit.getValue() == null) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
+            //System.out.println("No valid split found for current node. Marking as terminal.");
             return;
         }
     
@@ -99,7 +100,8 @@ public class treeNode {
             right.split();
         }
     
-
+        //System.out.println("Splitting on col[" + splitCol + "] <= " + splitThreshold);
+        //System.out.println("Left count: " + leftIndices.size() + ", Right count: " + rightIndices.size());
     }
 
     private Map.Entry<Integer, String> computeThreshold() {
@@ -115,9 +117,10 @@ public class treeNode {
                 uniqueValues.add(dataset.getValue(idx, col));
             }
 
-            if (uniqueValues.size() <= 1) continue;
+            if (uniqueValues.size() <= 1 || uniqueValues.size() > 15) continue;
+            List<String> thresholdCandidates = new ArrayList<>(uniqueValues);
 
-            for (String threshold : uniqueValues) {
+            for (String threshold : thresholdCandidates) {
                 List<Integer> left = new ArrayList<>();
                 List<Integer> right = new ArrayList<>();
                 for (int idx : rowIndices) {
