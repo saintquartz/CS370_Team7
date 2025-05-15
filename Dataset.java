@@ -79,7 +79,9 @@ public class dataset {
             while ((line = br.readLine()) != null && lineNumber < rows) {
                 String[] values = line.split(",", columns);
                 for (int i = 0; i < values.length; i++) {
-                    this.dataset[lineNumber][i] = values[i];
+                    this.dataset[lineNumber][i] = values[i].toLowerCase();
+                    // "current" == "Current"
+                    // can have cases where all data is not accurate
                 }
                 lineNumber++;
             }

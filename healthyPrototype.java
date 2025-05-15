@@ -155,7 +155,7 @@ public class healthyPrototype {
             String value = dataset[currRow][colIdx];
             String decision = dataset[currRow][dataset[currRow].length - 1];
 
-            if (value != null && !value.equals("") && !decision.equals("No")) {
+            if (value != null && !value.equals("") && !decision.equals("no")) {
                 total += Float.parseFloat(dataset[currRow][colIdx]);
                 count++;
             }
@@ -187,7 +187,7 @@ public class healthyPrototype {
             String value = dataset[currRow][colIdx];
             String decision = dataset[currRow][dataset[currRow].length - 1];
 
-            if (value != null && !value.equals("") && !decision.equals("No")) {
+            if (value != null && !value.equals("") && !decision.equals("no")) {
                 String key = dataset[currRow][colIdx];
                 frequencyMap.put(key, frequencyMap.getOrDefault(key, 0) + 1);
                 if(bestCount < frequencyMap.get(key)){

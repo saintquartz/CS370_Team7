@@ -59,12 +59,18 @@ public class randomForest {
     public Integer[] bootStrap() {
         // Bootstrap sampling to generate random training subsets
         //long start = System.nanoTime();
+        Integer[] subSet;
+        int dataSetSize = this.dataContainer.getRows();
+        if(dataSetSize/2 < this.bootStrapSize){
+            subSet = new Integer[dataSetSize/2];
+        }
+        subSet = new Integer[bootStrapSize];
 
-        Integer[] subSet = new Integer[bootStrapSize];
+
         Set<Integer> indexSet = new HashSet<>();
         int randomRowIndex;
 
-        for (int i = 0; i < bootStrapSize; i++) {
+        for (int i = 0; i < subSet.length; i++) {
             do {
                 randomRowIndex = this.randomObject.nextInt(this.dataContainer.getRows());
             } while (indexSet.contains(randomRowIndex) || testIdx.contains(randomRowIndex));  // Avoid test set rows

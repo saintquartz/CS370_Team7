@@ -102,7 +102,7 @@ public class userGUI {
 
         submitButton.addActionListener(e -> {
             for (int i = 0; i < fields.length; i++) {
-                userInput[i] = fields[i].getText().trim();
+                userInput[i] = fields[i].getText().trim().toLowerCase();
             }
             csvPath = csvField.getText().trim();
 
