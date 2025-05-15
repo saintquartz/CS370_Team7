@@ -2,12 +2,15 @@ package CS370_Team7;
 
 import java.util.*;
 
+
 public class randomForest {
     private decisionTree[] trees = new decisionTree[100];  // Array of decision trees
     private int numTrees = 100;
-    private int bootStrapSize = 100;
+    private int bootStrapSize = 1000;
     private dataset dataContainer;
     private Set<Integer> testIdx = new HashSet<>();
+    Random randomObject = new Random();
+
     
     public randomForest(dataset container) {
         this.dataContainer = container;
@@ -42,7 +45,12 @@ public class randomForest {
         for (int i = 0; i < numTrees; i++) {
             Integer[] bootStrapArray = bootStrap();
             List<Integer> bootStrapList = Arrays.asList(bootStrapArray);
+            //long start = System.nanoTime();
             decisionTree tree = new decisionTree(dataContainer, bootStrapList);
+            
+            //long end = System.nanoTime();
+            //long elapsedTime = end-start;
+            //System.out.println("DT make time: " + elapsedTime);
             tree.train();  // Train each decision tree
             trees[i] = tree;
         }
@@ -50,20 +58,27 @@ public class randomForest {
 
     public Integer[] bootStrap() {
         // Bootstrap sampling to generate random training subsets
+        //long start = System.nanoTime();
+
         Integer[] subSet = new Integer[bootStrapSize];
-        Random randomObject = new Random();
         Set<Integer> indexSet = new HashSet<>();
+        int randomRowIndex;
 
         for (int i = 0; i < bootStrapSize; i++) {
-            int randomRowIndex;
             do {
-                randomRowIndex = randomObject.nextInt(dataContainer.getRows());
+                randomRowIndex = this.randomObject.nextInt(this.dataContainer.getRows());
             } while (indexSet.contains(randomRowIndex) || testIdx.contains(randomRowIndex));  // Avoid test set rows
 
             subSet[i] = randomRowIndex;
             indexSet.add(randomRowIndex);
         }
+        //long end = System.nanoTime();
+        //long duration = end - start;  // duration in nanoseconds
+
         return subSet;
+
+
+
     }
 
     // Poll results from each tree and return the majority vote

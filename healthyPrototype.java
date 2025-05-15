@@ -19,117 +19,98 @@ public class healthyPrototype {
      * @return An array of recommendations (one for each non-static index).
      */
 
-    public String[] compareUserData(String[] userData, String[] label){
-        // certain columns are not recommendable 
-        // ex: age  you cannot tell someone to get yougner
-        
-        int[] nonStaticIndexs = {4,5,6,7,10,13,14,15,19,21};
-        // IMPORTANT INDEXS:
-        // 4 = BMI (User can lose/gain weight)
-        // 5 = Physical Activity
-        // 6 = Smoking Status
-        // 7 = Alcohol Consumption
-        // 10 = Cholesterol
-        // 13 = Depression
-        // 14 = sleep
-        // 15 = Diet
-        // 19 = socialEngagement
-        // 21 = Stress
+    public String[] compareUserData(String[] userData) {
+    int[] nonStaticIndexs = {4, 5, 6, 7, 10, 13, 14, 15, 20, 22};
+    String[] label = {
+        "Country", "Age", "Gender", "Education Level", "BMI", "Physical Activity Level", "Smoking Status", "Alcohol Consumption",
+        "Diabetes", "Hypertension", "Cholesterol Level", "Family History of Alzheimer’s", "Cognitive Test Score", "Depression Level",
+        "Sleep Quality", "Dietary Habits", "Air Pollution Exposure", "Employment Status", "Marital Status", "Genetic Risk Factor (APOE-ε4 allele)",
+        "Social Engagement Level", "Income Level", "Stress Levels", "Urban vs Rural Living", "Alzheimer’s Diagnosis"
+    };
 
-        HashMap<String, Integer> outputRanking = new HashMap<>();
-        
-        // Physical Activity / Depression / social engagement / stress levels
-        outputRanking.put("Low",1);
-        outputRanking.put("Medium",2);
-        outputRanking.put("High",3);
+    HashMap<String, Integer> outputRanking = new HashMap<>();
+    // Lowercase values to match .toLowerCase() calls
+    outputRanking.put("low", 1);
+    outputRanking.put("medium", 2);
+    outputRanking.put("high", 3);
 
-        //Smoking
-        outputRanking.put("Never",1);
-        outputRanking.put("Former",2);
-        outputRanking.put("Current",3);
+    outputRanking.put("never", 1);
+    outputRanking.put("former", 2);
+    outputRanking.put("current", 3);
 
-        // Alcohol
-        // outputRanking.put("Never",1); --> in Smoking: 
-        outputRanking.put("Occasionally",2);
-        outputRanking.put("Regularly",3);
+    outputRanking.put("occasionally", 2);
+    outputRanking.put("regularly", 3);
 
-        // Cholesterol
-        outputRanking.put("Normal",2);
-        // outputRanking.put("High",3); --> in Physical Activity
+    outputRanking.put("normal", 2);
 
-        // Sleep Quality
-        outputRanking.put("Poor",1);
-        outputRanking.put("Average",2);
-        outputRanking.put("Good",3);
+    outputRanking.put("poor", 1);
+    outputRanking.put("average", 2);
+    outputRanking.put("good", 3);
 
-        // Dietary Habits 
-        outputRanking.put("Unhealthy",1);
-        // outputRanking.put("Average",2); --> in Sleep Quality 
-        outputRanking.put("Healthy",3);
+    outputRanking.put("unhealthy", 1);
+    outputRanking.put("healthy", 3);
 
+    HashMap<Integer, Boolean> higherIsBetter = new HashMap<>();
+    higherIsBetter.put(4, false);  // BMI
+    higherIsBetter.put(5, true);   // Physical Activity
+    higherIsBetter.put(6, false);  // Smoking
+    higherIsBetter.put(7, false);  // Alcohol
+    higherIsBetter.put(10, false); // Cholesterol
+    higherIsBetter.put(13, false); // Depression
+    higherIsBetter.put(14, true);  // Sleep
+    higherIsBetter.put(15, true);  // Diet
+    higherIsBetter.put(20, true);  // Social Engagement 
+    higherIsBetter.put(22, false); // Stress 
 
-        // What if the user NEVER smokes but the AVERAGE Healthy person does?
-        // do we recommend them to smoke? NO
-        // if the user has LOWER values in this case we do not recommend them to increase their smoking
+    String[] recommendationArray = new String[10];
 
-        // For example: true = higher is better, false = lower is better
-        HashMap<Integer, Boolean> higherIsBetter = new HashMap<>();
+    for (int i = 0; i < nonStaticIndexs.length; i++) {
+        int index = nonStaticIndexs[i];
+        String userVal = userData[index].toLowerCase();
+        String protoVal = this.prototypeRow[index].toLowerCase();
 
-        higherIsBetter.put(4, false);  // BMI: lower is better
-        higherIsBetter.put(5, true);   // Physical Activity: higher is better
-        higherIsBetter.put(6, false);  // Smoking: lower is better
-        higherIsBetter.put(7, false);  // Alcohol: lower is better
-        higherIsBetter.put(10, false); // Cholesterol: lower is better
-        higherIsBetter.put(13, false); // Depression: lower is better
-        higherIsBetter.put(14, true);  // Sleep: higher is better
-        higherIsBetter.put(15, true);  // Diet: higher is better
-        higherIsBetter.put(19, true);  // Social Engagement: higher is better
-        higherIsBetter.put(21, false); // Stress: lower is better
+        // Debug info
+        //System.out.println("Comparing " + label[index] + ": user=" + userVal + ", proto=" + protoVal);
 
+        if (index == 4) {  // BMI
+            float userBMI = Float.parseFloat(userVal);
+            float protoBMI = Float.parseFloat(protoVal);
 
-        String[] recommendationArray = new String[10];
-
-        for (int i = 0; i < nonStaticIndexs.length; i++) {
-            int index = nonStaticIndexs[i];
-
-            String userVal = userData[index].toLowerCase();
-            String protoVal = this.prototypeRow[index].toLowerCase();
-
-            Integer userRank = outputRanking.get(userVal);
-            Integer protoRank = outputRanking.get(protoVal);
-            Boolean betterIfHigher = higherIsBetter.get(index);
-
-            if (index == 4) {  // BMI
-                float userBMI = Float.parseFloat(userVal);
-                float protoBMI = Float.parseFloat(protoVal);
-
-                if (userBMI < protoBMI - 1.0) {
-                    recommendationArray[i] = "Your BMI is lower than average. Consider consulting with a doctor if underweight.";
-                } else if (userBMI > protoBMI + 1.0) {
-                    recommendationArray[i] = "Your BMI is higher than average. Consider healthy weight management.";
-                } else {
-                    recommendationArray[i] = "Your BMI is within a healthy range.";
-                }
-            
-                continue;
-            }
-
-            if (userRank != null && protoRank != null && betterIfHigher != null) {
-                if ((betterIfHigher && userRank < protoRank) || (!betterIfHigher && userRank > protoRank)) {
-                    recommendationArray[i] = "Try to improve your " + label[index] + ".";
-                } else if ((betterIfHigher && userRank > protoRank) || (!betterIfHigher && userRank < protoRank)) {
-                    recommendationArray[i] = "Your " + label[index] + " is higher than recommended. Consider reducing.";
-                } else {
-                    recommendationArray[i] = "Your " + label[index] + " is on track!";
-                }
+            if (userBMI < protoBMI - 1.0) {
+                recommendationArray[i] = "Your BMI is lower than average. Consider consulting with a doctor if underweight.";
+            } else if (userBMI > protoBMI + 1.0) {
+                recommendationArray[i] = "Your BMI is higher than average. Consider healthy weight management.";
             } else {
-                recommendationArray[i] = "No recommendation for " + label[index] + ".";
+                recommendationArray[i] = "Your BMI is within a healthy range.";
             }
+
+            continue;
+        }
+
+        Integer userRank = outputRanking.get(userVal);
+        Integer protoRank = outputRanking.get(protoVal);
+        Boolean betterIfHigher = higherIsBetter.get(index);
+
+        // debug
+        //System.out.println("userRank=" + userRank + ", protoRank=" + protoRank + ", betterIfHigher=" + betterIfHigher);
+
+        if ((betterIfHigher && userRank < protoRank) || (!betterIfHigher && userRank > protoRank)) {
+            recommendationArray[i] = "Try to improve your " + label[index] + ".";
+        } else if ((betterIfHigher && userRank > protoRank) || (!betterIfHigher && userRank < protoRank)) {
+            if (betterIfHigher) {
+                recommendationArray[i] = "Great job! Your " + label[index] + " is better than average.";
+            } else {
+                recommendationArray[i] = "Your " + label[index] + " is higher than recommended. Consider reducing.";
+            }
+        } else {
+            recommendationArray[i] = "Your " + label[index] + " is on track!";
+        }
 
     }
 
     return recommendationArray;
-    }
+}
+
     
 
     /**

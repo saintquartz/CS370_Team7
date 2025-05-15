@@ -10,19 +10,22 @@ import java.util.*;
 
 public class dataset {
     // private String csvPath = "alzheimers_prediction_dataset.csv";
-    private String csvPath = ""; //add path here
-    private String[][] dataset;
-    private int rows = 74283;
-    private int columns = 25;
+    public String csvPath = "alzheimers_prediction_dataset.csv"; //add path here
+    public String[][] dataset;
+    public int rows = 74283;
+    public int columns = 25;
 
     public int[] integerIndexs = {1,3,4,12};
 
     public void setCSVPath(String newCSV) {
         this.csvPath = newCSV;
     }
+    public String getCSVPath() {
+        return this.csvPath;
+    }
 
     public String[][] getDataset() {
-        return dataset;
+        return this.dataset;
     }
 
     public List<Integer> getAllRowIndices() {
@@ -42,7 +45,7 @@ public class dataset {
     }
     public int getRows(){return this.rows;}
 
-    //private void setRows(int newRows){this.rows = newRows;} --> when we have upload CSV
+    private void setRows(int newRows){this.rows = newRows;}
     public int getCols(){return this.columns;}
     //private void setCols(int newCols){this.columns = newCols;}
 
@@ -50,7 +53,7 @@ public class dataset {
 
     public void setDataset() {
         // In order to have a 2D array we are going to turn everything into strings to process
-        dataset = new String[rows][columns];
+        this.dataset = new String[rows][columns];
         int lineNumber = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
@@ -64,11 +67,12 @@ public class dataset {
                 String[] values = line.split(",", columns);
 
                 for (int i = 0; i < values.length; i++) {
-                    dataset[lineNumber][i] = values[i];
+                    this.dataset[lineNumber][i] = values[i];
                 }
 
                 lineNumber++;
             }
+            this.setRows(lineNumber);
         } catch (IOException e) {
             e.printStackTrace();
         }
