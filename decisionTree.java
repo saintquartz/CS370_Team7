@@ -5,14 +5,13 @@ public class decisionTree {
     private treeNode root;
     private dataset dataset;
 
-    // Constructor to accept dataset and a list of indices for training
+
     public decisionTree(dataset dataset, List<Integer> rowIndices) {
         this.dataset = dataset;
-        this.root = new treeNode(dataset, rowIndices);  // Initialize the root node with bootstrap indices
+        this.root = new treeNode(dataset, rowIndices);  
     }
 
     public void train() {
-        // Train the decision tree starting from the root node
         if (root != null) {
             root.split();
         }
@@ -36,7 +35,6 @@ public class decisionTree {
     }
 
     private boolean isLessThanOrEqual(String val, String threshold, int colIndex) {
-        // Reuse the logic from treeNode (you may consider refactoring this into a shared static method)
         try {
             if (Arrays.stream(dataset.integerIndexs).anyMatch(x -> x == colIndex)) {
                 return Float.parseFloat(val) <= Float.parseFloat(threshold);

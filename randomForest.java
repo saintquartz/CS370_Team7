@@ -100,17 +100,17 @@ public class randomForest {
                 maxVotes = entry.getValue();
             }
         }
-        return mostVoted;  // Return the most common outcome
+        return mostVoted;  
     }
 
-    // Optional: Evaluate the accuracy of the model using the test set
+
     public float getAccuracy() {
         int numTotal = 0;
         int numCorrect = 0;
 
         for (int idx : testIdx) {
-            String[] sample = dataContainer.getRow(idx);  // Assuming a method to fetch a row
-            String expected = sample[sample.length - 1];  // The last column is the target variable
+            String[] sample = dataContainer.getRow(idx);  
+            String expected = sample[sample.length - 1];  
             String prediction = predict(sample);
             
             if (prediction.equals(expected)) {

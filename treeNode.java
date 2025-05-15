@@ -71,7 +71,6 @@ public class treeNode {
         if (bestSplit == null || bestSplit.getKey() == -1 || bestSplit.getValue() == null) {
             this.isTerminal = true;
             this.diagnosisResult = majorityDiagnosis(rowIndices);
-            //System.out.println("No valid split found for current node. Marking as terminal.");
             return;
         }
     
@@ -100,8 +99,7 @@ public class treeNode {
             right.split();
         }
     
-        //System.out.println("Splitting on col[" + splitCol + "] <= " + splitThreshold);
-        //System.out.println("Left count: " + leftIndices.size() + ", Right count: " + rightIndices.size());
+
     }
 
     private Map.Entry<Integer, String> computeThreshold() {
