@@ -1,0 +1,61 @@
+package CS370_Team7;
+
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.*;
+
+public class RandomForestTest {
+
+    private dataset ds;
+
+    @BeforeEach
+    public void setup() {
+        ds = new dataset();
+        ds.setCSVPath("fullDataset.csv");
+        ds.setDataset();
+        ds.dataImputation();
+    }
+
+    @Test
+    public void testConstructorCreatesForestAndSplitsData() {
+        randomForest rf = new randomForest(ds);
+        assertEquals(100, rf.getNumTrees(), "Random forest should have 100 trees");
+        assertNotNull(rf.getDTree(), "Decision trees array should not be null");
+        assertEquals(100, rf.getDTree().length, "Decision trees array size should be 100");
+    }
+
+    @Test
+    public void testBootstrapSampleSizeAndExclusion() {
+        randomForest rf = new randomForest(ds);
+        Integer[] sample = rf.bootStrap();
+        assertEquals(1000, sample.length, "Bootstrap sample size should be 1000");
+
+        Set<Integer> testIdx = rf.getTestIdx();
+        for (Integer idx : sample) {
+            assertFalse(testIdx.contains(idx), "Bootstrap sample should not contain test indices");
+            assertTrue(idx >= 0 && idx < ds.getRows(), "Bootstrap index out of dataset range");
+        }
+    }
+
+    @Test
+    public void testPredictReturnsValidLabels() {
+        randomForest rf = new randomForest(ds);
+
+        // Pick a random row from dataset
+        int randRow = new Random().nextInt(ds.getRows());
+        String[] sample = ds.getRow(randRow);
+
+        String prediction = rf.predict(sample);
+        assertNotNull(prediction, "Prediction should not be null");
+        // Assuming binary classification with "Yes" or "No"
+        assertTrue(prediction.equals("Yes") || prediction.equals("No"), "Prediction should be 'Yes' or 'No'");
+    }
+
+    @Test
+    public void testGetAccuracyReturnsValidRange() {
+        randomForest rf = new randomForest(ds);
+        float acc = rf.getAccuracy();
+        assertTrue(acc >= 0.0f && acc <= 1.0f, "Accuracy should be between 0 and 1");
+    }
+}
