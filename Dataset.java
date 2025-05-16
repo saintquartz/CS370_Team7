@@ -94,40 +94,49 @@ public class dataset {
     }
     public void findMean(int colIdx){
         int count = 0;
-        int total = 0;
-        ArrayList<Integer> emptyIdx= new ArrayList<>();
+        float total = 0f;                 // use float accumulator so fractions aren’t lost
+        ArrayList<Integer> emptyIdx = new ArrayList<>();
 
-        for(int currRow = 0; currRow<getRows();currRow++){
-            if(this.dataset[currRow][colIdx] != null && this.dataset[currRow][colIdx]!= ""){
+        for(int currRow = 0; currRow < getRows(); currRow++){
+            if(this.dataset[currRow][colIdx] != null && !this.dataset[currRow][colIdx].isEmpty()){
                 total += Float.parseFloat(this.dataset[currRow][colIdx]);
                 count++;
-            }
-            else{
+            } else {
                 emptyIdx.add(currRow);
             }
         }
-        //prevent divide by 0 answer SHOULD be 0 if all are null
+
+        // prevent divide by 0 answer SHOULD be 0 if all are null
         String replacementValue = "Null Column";
         boolean flag = false;
+        String meanStr = replacementValue;
+
         if(count == 0){
             this.defaultValues[colIdx] = replacementValue;
             flag = true;
         }
         else{
-            this.defaultValues[colIdx] = String.valueOf(colIdx == 4 ? String.format("%.1f", (float) total / count) : (int) ((Integer) total / count));
-
+            if(colIdx == 4){
+                // col 4 = BMI → keep one decimal
+                meanStr = String.format("%.1f", total / count);
+            } else {
+                // Every other mean idx is an int → truncate
+                meanStr = String.valueOf((int)(total / count));
+            }
+            this.defaultValues[colIdx] = meanStr;
         }
+
         for(int nullIndex : emptyIdx){
-            //col 12 = Float
-            // Every other mean idx is an int
-            if(flag == true){
+            // col 4 = BMI; other columns use integer mean
+            if(flag){
                 this.dataset[nullIndex][colIdx] = replacementValue;
             }
             else{
-               this.dataset[nullIndex][colIdx] = String.valueOf(colIdx == 4 ? String.format("%.1f", (float) total / count) : (int) ((Integer) total / count));
+                this.dataset[nullIndex][colIdx] = meanStr;
             }
         }
     }
+
 
     public void findMode(int colIdx){
         String modeString = "NULL";

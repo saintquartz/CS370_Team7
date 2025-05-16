@@ -146,28 +146,41 @@ public class healthyPrototype {
      * @param dataset The health dataset.
      * @return The mean as a string rounded to 2 decimal places.
      */
-    public String findHealthyMean(int colIdx, String[][] dataset){
-        // takes mean of column and returns it
-        int count = 0;
-        int total = 0;
+   public String findHealthyMean(int colIdx, String[][] dataset) {
+    // takes mean of column and returns it
+    int count = 0;
+    float total = 0f;                           // accumulate as float so we keep fractions
 
-        for(int currRow = 0; currRow<dataset.length;currRow++){
-            String value = dataset[currRow][colIdx];
-            String decision = dataset[currRow][dataset[currRow].length - 1];
+    for (int currRow = 0; currRow < dataset.length; currRow++) {
+        String value = dataset[currRow][colIdx];
+        String decision = dataset[currRow][dataset[currRow].length - 1];
 
-            if (value != null && !value.equals("") && !decision.equals("no")) {
-                total += Float.parseFloat(dataset[currRow][colIdx]);
-                count++;
-            }
+        // only include rows where value is non‐empty and decision != "no"
+        if (value != null && !value.isEmpty() && !"no".equals(decision)) {
+            total += Float.parseFloat(value);
+            count++;
         }
-        if(count == 0){
-            return "EMPTY";
-        }
-
-        float mean = (float) total / count;
-
-        return String.format("%.2f", mean);
     }
+
+    // if no rows matched, return EMPTY
+    if (count == 0) {
+        return "EMPTY";
+    }
+
+    String meanStr;
+    float mean = total / count;
+
+    if (colIdx == 4) {
+        // col 4 = BMI → keep one decimal
+        meanStr = String.format("%.1f", mean);
+    } else {
+        // every other numeric field → truncate to int
+        meanStr = String.valueOf((int) mean);
+    }
+
+    return meanStr;
+}
+
 
     /**
      * Calculates the mode (most common value) of a categorical column for healthy users.
