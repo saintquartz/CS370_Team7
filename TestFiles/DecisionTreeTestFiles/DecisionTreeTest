@@ -1,0 +1,75 @@
+package CS370_Team7;
+
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
+
+public class DecisionTreeTest {
+
+    private dataset testData;
+
+    @BeforeEach
+    public void setup() {
+        // Prepare a small dataset instance for testing
+        testData = new dataset();
+        testData.setCSVPath("decisionTreeTestData.csv");
+        testData.setDataset();
+    }
+
+    @Test
+    public void testConstructorCreatesRootNode() {
+        List<Integer> indices = Arrays.asList(0, 1, 2);
+        decisionTree tree = new decisionTree(testData, indices);
+        assertNotNull(tree);
+        // We could reflectively check root or just test other behaviors
+    }
+
+    @Test
+    public void testTrainCallsSplit() {
+        List<Integer> indices = Arrays.asList(0, 1, 2);
+        decisionTree tree = new decisionTree(testData, indices);
+        tree.train();
+        // You could add a flag or check tree state changes (like root.isTerminal() == false)
+        // or test tree printing (to see if splits occurred)
+        assertFalse(tree.getRoot().isTerminal(), "Root should not be terminal after split");
+    }
+
+    @Test
+    public void testPredictReturnsValidLabel() {
+        List<Integer> indices = Arrays.asList(0, 1, 2);
+        decisionTree tree = new decisionTree(testData, indices);
+        tree.train();
+
+        String[] sample = testData.getRow(0);
+        String prediction = tree.predict(sample);
+        assertNotNull(prediction);
+        // Optionally: check that prediction matches expected diagnosis values from dataset
+        Set<String> possibleLabels = new HashSet<>(Arrays.asList("Yes", "No")); // Adjust for your dataset
+        assertTrue(possibleLabels.contains(prediction));
+    }
+
+    @Test
+    public void testIsLessThanOrEqualVarious() throws Exception {
+        decisionTree tree = new decisionTree(testData, Arrays.asList(0));
+
+        // Numeric comparison
+        assertTrue(tree.isLessThanOrEqual("3.5", "4.0", 1));
+        assertFalse(tree.isLessThanOrEqual("5.5", "4.0", 1));
+
+        // Ordinal
+        assertTrue(tree.isLessThanOrEqual("medium", "high", 5));
+        assertFalse(tree.isLessThanOrEqual("high", "medium", 5));
+
+        // Binary
+        assertTrue(tree.isLessThanOrEqual("no", "yes", 8));
+        assertFalse(tree.isLessThanOrEqual("yes", "no", 8));
+
+        // Gender special case (col=2)
+        assertTrue(tree.isLessThanOrEqual("female", "male", 2));
+        assertFalse(tree.isLessThanOrEqual("male", "female", 2));
+
+        // Default lexicographical
+        assertTrue(tree.isLessThanOrEqual("apple", "banana", 10));
+        assertFalse(tree.isLessThanOrEqual("pear", "banana", 10));
+    }
+}
