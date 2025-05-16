@@ -40,7 +40,7 @@ public class userGUI {
         System.out.println("END PIPELINE: Elapsed = " + (pipelineEnd - pipelineStart) / 1_000_000 + " ms");
     }
 
-    private void runPipelineInBackground(JFrame frame, String path) {
+    private void runPipelineInBackground(JFrame frame, String path, Runnable onPipelineDone) {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -54,7 +54,10 @@ public class userGUI {
             @Override
             protected void done() {
                 try {
-                    get(); // Triggers exception handling
+                    get(); // Throws if there was an exception
+                    if (onPipelineDone != null) {
+                        onPipelineDone.run();
+                    }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame,
                             "Failed to load CSV file from:\n" + path + "\n" + ex.getMessage(),
@@ -65,6 +68,7 @@ public class userGUI {
         };
         worker.execute();
     }
+
 
     private void createAndShowGUI() {
         JFrame frame = new JFrame("User Input Form");
@@ -102,31 +106,44 @@ public class userGUI {
 
         submitButton.addActionListener(e -> {
             for (int i = 0; i < fields.length; i++) {
-                userInput[i] = fields[i].getText().trim().toLowerCase();
+                userInput[i] = fields[i].getText().trim();
             }
-            csvPath = csvField.getText().trim();
+            String inputCSVPath = csvField.getText().trim();
 
             for (int i = 0; i < userInput.length; i++) {
                 System.out.println(variableNames[i] + ": " + userInput[i]);
             }
-            System.out.println("CSV File Path: " + csvPath);
+            System.out.println("CSV File Path: " + inputCSVPath);
 
-            if (!currCSVPath.equals(csvPath) && csvPath != null && !csvPath.isEmpty()) {
-                runPipelineInBackground(frame, csvPath);
-                return;
+            if (!currCSVPath.equals(inputCSVPath) && inputCSVPath != null && !inputCSVPath.isEmpty()) {
+                // Run pipeline and only after done, run prediction and display output
+                runPipelineInBackground(frame, csvPath, () -> {
+                    String newPredictionFromRF = rf.predict(userInput);
+                    System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
+
+                    System.out.println("Comparison with Healthy Prototype:");
+                    String[] output = hp.compareUserData(userInput);
+                    for (String recommendation : output) {
+                        System.out.println(recommendation);
+                    }
+
+                    JOptionPane.showMessageDialog(frame, "New CSV loaded, model updated, inputs processed!");
+                });
+            } else {
+                // Pipeline not updated, just use current model
+                String newPredictionFromRF = rf.predict(userInput);
+                System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
+
+                System.out.println("Comparison with Healthy Prototype:");
+                String[] output = hp.compareUserData(userInput);
+                for (String recommendation : output) {
+                    System.out.println(recommendation);
+                }
+
+                JOptionPane.showMessageDialog(frame, "Inputs submitted with existing model!");
             }
-
-            String newPredictionFromRF = rf.predict(userInput);
-            System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
-
-            System.out.println("Comparison with Healthy Prototype:");
-            String[] output = hp.compareUserData(userInput);
-            for (String recommendation : output) {
-                System.out.println(recommendation);
-            }
-
-            JOptionPane.showMessageDialog(frame, "Inputs and CSV path submitted!");
         });
+
 
         JPanel paddedPanel = new JPanel(new BorderLayout());
         paddedPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -137,7 +154,7 @@ public class userGUI {
 
         if (!pipelineCalledOnce) {
             pipelineCalledOnce = true;
-            runPipelineInBackground(frame, currCSVPath);
+            runPipelineInBackground(frame, currCSVPath, null);
         }
     }
 }
