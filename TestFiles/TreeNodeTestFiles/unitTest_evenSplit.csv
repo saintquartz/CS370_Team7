@@ -1,0 +1,11 @@
+Country,Age,Gender,Education,BMI,Physical Activity,Smoking Status,Alcohol Consumption,Diabetes,Hypertension,Cholesterol level,Family History of Alzheimer's,Cognitive Test Score,Depression Level,Sleep Quality,Dietary Habits,Air Pollution,Employment Status,Marital Status,Genetic Risk,Social Engagement,Income Level,Stress Level,Urban Vs Rural,Alzheimer’s Diagnosis
+USA,60,Male,12,25.0,Medium,Never,Never,No,No,Normal,No,80,Low,Good,Healthy,Low,Employed,Married,No,Medium,Medium,Medium,Urban,No
+USA,62,Female,14,28.5,High,Former,Occasionally,No,No,Normal,No,85,Low,Good,Healthy,Low,Employed,Married,No,High,High,Low,Urban,No
+USA,59,Male,10,30.1,Low,Never,Never,No,No,High,Yes,70,Medium,Poor,Average,Medium,Retired,Single,Yes,Low,Low,High,Rural,Yes
+USA,65,Female,16,22.0,Medium,Never,Never,No,No,Normal,No,90,Low,Good,Healthy,Low,Employed,Married,No,High,High,Low,Urban,No
+USA,61,Male,11,27.3,Medium,Never,Never,No,Yes,High,Yes,75,Medium,Average,Average,Medium,Employed,Married,No,Medium,Medium,Medium,Urban,No
+USA,58,Female,15,23.4,High,Former,Occasionally,No,No,Normal,No,88,Low,Good,Healthy,Low,Employed,Married,No,High,High,Low,Urban,No
+USA,63,Male,9,29.0,Low,Never,Regularly,No,No,High,Yes,65,High,Poor,Unhealthy,High,Unemployed,Single,Yes,Low,Low,High,Rural,Yes
+USA,67,Female,13,24.5,Medium,Never,Never,No,No,Normal,No,82,Low,Good,Healthy,Low,Employed,Married,No,High,Medium,Low,Urban,No
+USA,64,Male,12,26.7,Medium,Never,Never,No,No,Normal,No,78,Medium,Average,Average,Medium,Employed,Married,No,Medium,Medium,Medium,Urban,No
+USA,60,Female,14,25.8,High,Never,Never,No,No,Normal,No,89,Low,Good,Healthy,Low,Employed,Married,No,High,High,Low,Urban,No
