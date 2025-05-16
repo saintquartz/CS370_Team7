@@ -1,0 +1,51 @@
+package CS370_Team7;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
+public class TreeNodeTest {
+    private treeNode buildRootFromCSV(String csvPath) {
+        dataset ds = new dataset();
+        ds.setCSVPath(csvPath);
+        ds.setDataset();
+        ds.dataImputation();
+
+        List<Integer> allRows = ds.getAllRowIndices();
+        return new treeNode(ds, allRows);
+    }
+
+    @Test
+    public void basicSplitTest() {
+        treeNode root = buildRootFromCSV("unitTest1.csv");
+        root.split();
+
+        assertFalse(root.isTerminal());
+        assertNotNull(root.getLeft());
+        assertNotNull(root.getRight());
+    }
+
+    @Test
+    public void validSplitProducesTwoChildren() {
+        treeNode root = buildRootFromCSV("unitTest_evenSplit.csv");
+        root.split();
+
+        assertFalse(root.isTerminal());
+        assertNotNull(root.getLeft());
+        assertNotNull(root.getRight());
+
+        // Use getter methods since rowIndices is private
+        int total = root.getLeft().getRowIndices().size() + root.getRight().getRowIndices().size();
+        assertEquals(root.getRowIndices().size(), total);
+    }
+
+    @Test
+    public void majorityDiagnosisIsCorrect() {
+        treeNode root = buildRootFromCSV("unitTest_majority.csv");
+        root.split();
+
+        assertTrue(root.isTerminal());
+        assertEquals("Yes", root.getDiagnosisResult());
+    }
+}
