@@ -26,9 +26,12 @@ public class randomForest {
         return this.trees;
     }
 
+    public Set<Integer> getTestIdx() {
+        return new HashSet<>(this.testIdx);
+    }
+
     public void splitDataSet() {
         // Split 20% of the data for testing
-
         double splitRate = 0.2;
         int rowTotal = this.dataContainer.getRows();
         int testSize = (int)(rowTotal * splitRate);
@@ -39,24 +42,19 @@ public class randomForest {
             int randomRowIndex = randomObject.nextInt(rowTotal);
             testIdx.add(randomRowIndex);
         }
-
     }
 
     public void train() {
         // Train the forest by generating multiple decision trees
         for (int i = 0; i < numTrees; i++) {
-
-
             Integer[] bootStrapArray = bootStrap();
             List<Integer> bootStrapList = Arrays.asList(bootStrapArray);
             //long start = System.nanoTime();
-
             decisionTree tree = new decisionTree(dataContainer, bootStrapList);
             
             //long end = System.nanoTime();
             //long elapsedTime = end-start;
             //System.out.println("DT make time: " + elapsedTime);
-
             tree.train();  // Train each decision tree
             trees[i] = tree;
         }
@@ -65,21 +63,12 @@ public class randomForest {
     public Integer[] bootStrap() {
         // Bootstrap sampling to generate random training subsets
         //long start = System.nanoTime();
-        Integer[] subSet;
-        int dataSetSize = this.dataContainer.getRows();
-        //System.out.println("Boot Strap SIZE "+ bootStrapSize);
-        //System.out.println("DS SIZE /2  "+ dataSetSize/2);
 
-        if(dataSetSize/2 < this.bootStrapSize){
-            subSet = new Integer[dataSetSize/2];
-        }
-        subSet = new Integer[bootStrapSize];
-
-
+        Integer[] subSet = new Integer[bootStrapSize];
         Set<Integer> indexSet = new HashSet<>();
         int randomRowIndex;
 
-        for (int i = 0; i < subSet.length; i++) {
+        for (int i = 0; i < bootStrapSize; i++) {
             do {
                 randomRowIndex = this.randomObject.nextInt(this.dataContainer.getRows());
             } while (indexSet.contains(randomRowIndex) || testIdx.contains(randomRowIndex));  // Avoid test set rows
@@ -115,17 +104,16 @@ public class randomForest {
                 maxVotes = entry.getValue();
             }
         }
-        return mostVoted;  
+        return mostVoted;  // Return the most common outcome
     }
-
 
     public float getAccuracy() {
         int numTotal = 0;
         int numCorrect = 0;
 
         for (int idx : testIdx) {
-            String[] sample = dataContainer.getRow(idx);  
-            String expected = sample[sample.length - 1];  
+            String[] sample = dataContainer.getRow(idx);  // Assuming a method to fetch a row
+            String expected = sample[sample.length - 1];  // The last column is the target variable
             String prediction = predict(sample);
             
             if (prediction.equals(expected)) {
