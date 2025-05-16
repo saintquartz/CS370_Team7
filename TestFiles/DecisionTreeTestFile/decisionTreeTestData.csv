@@ -1,0 +1,13 @@
+Country,Age,Gender,Education,BMI,Physical Activity,Smoking Status,Alcohol Consumption,Diabetes,Hypertension,Cholesterol Level,Family History of Alzheimer's,Cognitive Test Score,Depression Level,Sleep Quality,Dietary Habits,Air Pollution,Employment Status,Marital Status,Social Engagement,Genetic Risk,Income Level,Stress Level,Urban Vs Rural Living,Alzheimer’s Diagnosis
+USA,65,male,12,25.3,medium,never,occasionally,no,no,normal,no,85,medium,good,average,medium,employed,married,medium,no,medium,low,urban,no
+Canada,72,female,16,22.0,high,former,never,no,yes,low,yes,90,low,good,healthy,low,retired,widowed,high,yes,high,medium,rural,yes
+UK,55,male,10,28.7,low,current,regularly,yes,yes,high,yes,75,high,poor,unhealthy,high,employed,single,low,no,low,high,urban,no
+France,68,female,14,23.5,medium,never,occasionally,no,no,normal,no,88,medium,average,average,medium,employed,married,medium,no,medium,medium,rural,no
+Germany,70,male,8,30.1,low,former,never,yes,yes,high,yes,80,high,poor,unhealthy,high,retired,widowed,low,yes,low,high,urban,yes
+Japan,60,female,18,21.7,high,never,never,no,no,low,no,92,low,good,healthy,low,employed,married,high,no,high,low,rural,no
+Australia,75,male,11,27.4,medium,current,regularly,yes,yes,normal,yes,70,high,poor,unhealthy,medium,retired,single,low,yes,low,high,urban,yes
+Italy,62,female,13,24.9,medium,former,occasionally,no,no,normal,no,86,medium,average,average,medium,employed,married,medium,no,medium,medium,rural,no
+Spain,69,male,15,26.0,low,never,never,no,no,low,yes,84,medium,average,healthy,low,employed,married,medium,no,medium,medium,urban,no
+India,58,female,9,29.5,high,current,regularly,yes,yes,high,yes,78,high,poor,unhealthy,high,employed,single,low,yes,low,high,rural,yes
+Brazil,66,male,10,28.0,medium,former,never,no,no,normal,no,83,medium,average,average,medium,employed,married,medium,no,medium,medium,urban,no
+Mexico,64,female,14,23.2,high,never,occasionally,no,no,low,no,89,low,good,healthy,low,employed,married,high,no,high,low,rural,no
