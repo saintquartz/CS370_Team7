@@ -24,6 +24,9 @@ public class treeNode {
         this.isTerminal = false;
     }
 
+    public List<Integer> getRowIndices() {
+        return rowIndices;
+    }
 
     public int getSplitCol() {
         return splitCol;
