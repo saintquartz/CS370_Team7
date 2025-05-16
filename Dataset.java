@@ -53,7 +53,7 @@ public class dataset {
     //private void setCols(int newCols){this.columns = newCols;}
     public void setDataset() {
         int rowCount = 0;
-
+        System.out.println("SET DATASET CSV PATH: " + csvPath);
         // First pass: Count the number of lines (excluding header)
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
             // Skip header

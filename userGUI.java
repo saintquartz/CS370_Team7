@@ -28,7 +28,7 @@ public class userGUI {
     private void pipelineData() throws IOException {
         long pipelineStart = System.nanoTime();
         System.out.println("START PIPELINE");
-
+        System.out.println(dataset.getCSVPath());
         dataset.setDataset();
         System.out.println("Done: setDataset");
 
@@ -52,7 +52,7 @@ public class userGUI {
             protected Void doInBackground() throws Exception {
                 currCSVPath = path;
                 dataset = new dataset();
-                dataset.setCSVPath(currCSVPath);
+                dataset.setCSVPath(path);
                 pipelineData();
                 return null;
             }
@@ -123,7 +123,7 @@ public class userGUI {
 
             if (!currCSVPath.equals(inputCSVPath) && inputCSVPath != null && !inputCSVPath.isEmpty()) {
                 // Run pipeline and only after done, run prediction and display output
-                runPipelineInBackground(frame, csvPath, () -> {
+                runPipelineInBackground(frame, inputCSVPath, () -> {
                     fillMissingUserData();
                     String newPredictionFromRF = rf.predict(userInput);
                     System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
