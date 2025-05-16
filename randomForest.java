@@ -28,6 +28,7 @@ public class randomForest {
 
     public void splitDataSet() {
         // Split 20% of the data for testing
+
         double splitRate = 0.2;
         int rowTotal = this.dataContainer.getRows();
         int testSize = (int)(rowTotal * splitRate);
@@ -38,19 +39,24 @@ public class randomForest {
             int randomRowIndex = randomObject.nextInt(rowTotal);
             testIdx.add(randomRowIndex);
         }
+
     }
 
     public void train() {
         // Train the forest by generating multiple decision trees
         for (int i = 0; i < numTrees; i++) {
+
+
             Integer[] bootStrapArray = bootStrap();
             List<Integer> bootStrapList = Arrays.asList(bootStrapArray);
             //long start = System.nanoTime();
+
             decisionTree tree = new decisionTree(dataContainer, bootStrapList);
             
             //long end = System.nanoTime();
             //long elapsedTime = end-start;
             //System.out.println("DT make time: " + elapsedTime);
+
             tree.train();  // Train each decision tree
             trees[i] = tree;
         }
@@ -61,6 +67,9 @@ public class randomForest {
         //long start = System.nanoTime();
         Integer[] subSet;
         int dataSetSize = this.dataContainer.getRows();
+        //System.out.println("Boot Strap SIZE "+ bootStrapSize);
+        //System.out.println("DS SIZE /2  "+ dataSetSize/2);
+
         if(dataSetSize/2 < this.bootStrapSize){
             subSet = new Integer[dataSetSize/2];
         }

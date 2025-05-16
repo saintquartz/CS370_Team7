@@ -1,0 +1,9 @@
+Country,Age ,Gender,Education Level,BMI,Physical Activity Level,Smoking Status,Alcohol Consumption,Diabetes,Hypertension,Cholesterol Level,Family History,Cognitive Score,Depression Level,Sleep Quality,Dietary Habits,Air Pollution Exposure,Employment Status,Marital Status,Genetic Risk Factor,Social Engagement Level,Income Level,Stress Level,Urban vs Rural Living,has ALZ
+United States,80,Male,12,33.7,Low,Former,Regularly,yes,yes,High,yes,30,high,poor,Unhealthy,High,Unemployed,Married,Yes,low,low,high,urban,yes
+United States,55,Female,19,25,High,,,no,no,low,no,99,low,good,healthy,low,employed,married,No,high,medium,medium,rural,No
+United States,70,Male,19,27,medium,never,occasionallu,no,no,Normal,no,65,average,average,average,medium,retired,widowed,No,medium,high,low,,No
+, ,male,15,34,Low,current,Regularly,no,yes,High,yes,40,high,poor,average,medium,employed,single,No,medium,medium,high,rural,yes
+Brazil,50,Female,7,23,,never,never,no,no,normal,yes,85,low,good,healthy,low,employed,married,No,high,high,low,rural,no
+United States,55,,18,18.5,Low,never,never,,,normal,yes,99,low,good,average,low,,,,medium,high,low,rural,no
+United States,90,Male,,,low,former,occasionally,yes,no,normal,no,45,low,good,average,low,retired,widowed,No,medium,high,low,rural,yes
+United States,55,Male,16,25.4,medium,never,never,no,yes,normal,no,75,low,good,healthy,high,employed,married,Yes,low,low,,urban,no

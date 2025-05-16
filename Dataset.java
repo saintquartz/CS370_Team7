@@ -43,7 +43,7 @@ public class dataset {
     public String[] getRow(int row) {
         return dataset[row];
     }
-    public int getRows(){return this.rows;}
+    public int getRows(){return this.dataset.length;}
 
     private void setRows(int newRows){this.rows = newRows;}
     public int getCols(){return this.columns;}
@@ -79,7 +79,7 @@ public class dataset {
             while ((line = br.readLine()) != null && lineNumber < rows) {
                 String[] values = line.split(",", columns);
                 for (int i = 0; i < values.length; i++) {
-                    this.dataset[lineNumber][i] = values[i].toLowerCase();
+                    this.dataset[lineNumber][i] = values[i].trim().toLowerCase();
                     // "current" == "Current"
                     // can have cases where all data is not accurate
                 }
