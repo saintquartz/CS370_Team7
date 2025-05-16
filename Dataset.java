@@ -14,9 +14,12 @@ public class dataset {
     public String[][] dataset;
     public int rows = 74283;
     public int columns = 25;
-
+    public String[] defaultValues;
     public int[] integerIndexs = {1,3,4,12};
 
+    public String getDefaultValue(int colIdx){
+        return this.defaultValues[colIdx];
+    };
     public void setCSVPath(String newCSV) {
         this.csvPath = newCSV;
     }
@@ -107,7 +110,12 @@ public class dataset {
         String replacementValue = "Null Column";
         boolean flag = false;
         if(count == 0){
+            this.defaultValues[colIdx] = replacementValue;
             flag = true;
+        }
+        else{
+            this.defaultValues[colIdx] = String.valueOf(colIdx == 4 ? String.format("%.1f", (float) total / count) : (int) ((Integer) total / count));
+
         }
         for(int nullIndex : emptyIdx){
             //col 12 = Float
@@ -116,7 +124,7 @@ public class dataset {
                 this.dataset[nullIndex][colIdx] = replacementValue;
             }
             else{
-                this.dataset[nullIndex][colIdx] = String.valueOf(colIdx == 12 ? (float) total / count : total / count);
+               this.dataset[nullIndex][colIdx] = String.valueOf(colIdx == 4 ? String.format("%.1f", (float) total / count) : (int) ((Integer) total / count));
             }
         }
     }
@@ -142,7 +150,7 @@ public class dataset {
             }
         }
         //System.out.println(colIdx + " "+  modeString);
-
+        this.defaultValues[colIdx] = modeString;
         for(int nullIndex : emptyIdx){
             this.dataset[nullIndex][colIdx] = modeString;
         }
@@ -151,6 +159,7 @@ public class dataset {
         // integer idxs: 1,3,4,12
 
         // The array is all strings but we will treat columns 1,3,4,12 as integers
+        this.defaultValues = new String[this.dataset[0].length];
         int currIdx = 0;
         for(int i=0; i<getCols();i++){
             if(currIdx < this.integerIndexs.length && i==this.integerIndexs[currIdx]){

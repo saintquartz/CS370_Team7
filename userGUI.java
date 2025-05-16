@@ -18,7 +18,13 @@ public class userGUI {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new userGUI().createAndShowGUI());
     }
-
+    void fillMissingUserData(){
+        for(int i=0; i<this.userInput.length;i++){
+            if(userInput[i].isEmpty()){
+                userInput[i] = this.dataset.getDefaultValue(i);
+            }
+        }
+    }
     private void pipelineData() throws IOException {
         long pipelineStart = System.nanoTime();
         System.out.println("START PIPELINE");
@@ -106,7 +112,7 @@ public class userGUI {
 
         submitButton.addActionListener(e -> {
             for (int i = 0; i < fields.length; i++) {
-                userInput[i] = fields[i].getText().trim();
+                userInput[i] = fields[i].getText().trim();    
             }
             String inputCSVPath = csvField.getText().trim();
 
@@ -118,6 +124,7 @@ public class userGUI {
             if (!currCSVPath.equals(inputCSVPath) && inputCSVPath != null && !inputCSVPath.isEmpty()) {
                 // Run pipeline and only after done, run prediction and display output
                 runPipelineInBackground(frame, csvPath, () -> {
+                    fillMissingUserData();
                     String newPredictionFromRF = rf.predict(userInput);
                     System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
 
@@ -126,10 +133,12 @@ public class userGUI {
                     for (String recommendation : output) {
                         System.out.println(recommendation);
                     }
+                    
 
                     JOptionPane.showMessageDialog(frame, "New CSV loaded, model updated, inputs processed!");
                 });
             } else {
+                fillMissingUserData();
                 // Pipeline not updated, just use current model
                 String newPredictionFromRF = rf.predict(userInput);
                 System.out.println("Prediction for custom new sample (Random Forest): " + newPredictionFromRF);
@@ -139,6 +148,9 @@ public class userGUI {
                 for (String recommendation : output) {
                     System.out.println(recommendation);
                 }
+
+                
+                
 
                 JOptionPane.showMessageDialog(frame, "Inputs submitted with existing model!");
             }
